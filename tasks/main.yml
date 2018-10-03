@@ -1,0 +1,43 @@
+---
+# tasks file for ali.elasticsearch
+
+
+- name: 1) install openjdk
+  yum:
+    name: java-1.8*
+    state: present
+
+- name: Add Elasticsearch GPG key.
+  rpm_key:
+    key: https://packages.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: Add Elasticsearch repository.
+  copy:
+    src: elasticsearch.repo
+    dest: /etc/yum.repos.d/elasticsearch.repo
+    mode: 0644
+
+- name: Installing elasticsearch
+  yum: 
+    name: elasticsearch
+    state: present
+
+- name: Enabling services
+  service: 
+    name: elasticsearch
+    enabled: yes
+
+- name: Running services
+  service:
+    name: elasticsearch
+    state: started
+
+- name: stoping firewalld
+  firewalld:
+    state: disabled
+
+- name: Disabling selinux
+  selinux:
+    policy: targeted
+    state: permissive
